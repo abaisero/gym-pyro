@@ -55,6 +55,7 @@ class PyroPOMDP(gym.Env):  # pylint: disable=abstract-method
         self.done = None
         self.action_prev = None
         self.observation_prev = None
+        self.reward_prev = None
 
     @property
     def states(self):
@@ -134,6 +135,7 @@ class PyroPOMDP(gym.Env):  # pylint: disable=abstract-method
         self.state = state_next
         self.action_prev = action
         self.observation_prev = observation
+        self.reward_prev = reward
 
         return observation, reward, done, info
 
@@ -156,6 +158,9 @@ class PyroPOMDP(gym.Env):  # pylint: disable=abstract-method
                 f'observation: {self.model.observations[oi]} (#{oi})',
                 file=outfile,
             )
+
+        if self.reward_prev is not None:
+            print(f'reward: {self.reward_prev.item()}', file=outfile)
 
         si = self.state.item()
         print(f'state: {self.model.states[si]} (#{si})', file=outfile)

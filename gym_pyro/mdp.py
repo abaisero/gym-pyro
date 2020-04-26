@@ -47,6 +47,7 @@ class PyroMDP(gym.Env):  # pylint: disable=abstract-method
         self.state = None
         self.done = None
         self.action_prev = None
+        self.reward_prev = None
 
     @property
     def states(self):
@@ -72,6 +73,7 @@ class PyroMDP(gym.Env):  # pylint: disable=abstract-method
         self.state = pyro.sample(f'S_{self.__time_step}', state_dist)
         self.done = torch.tensor(0)
         self.action_prev = None
+        self.reward_prev = None
 
         return self.state
 
@@ -118,6 +120,7 @@ class PyroMDP(gym.Env):  # pylint: disable=abstract-method
 
         self.state = state_next
         self.action_prev = action
+        self.reward_prev = reward
 
         return state_next, reward, done, info
 
@@ -133,6 +136,9 @@ class PyroMDP(gym.Env):  # pylint: disable=abstract-method
         if self.action_prev is not None:
             ai = self.action_prev.item()
             print(f'action: {self.model.actions[ai]} (#{ai})', file=outfile)
+
+        if self.reward_prev is not None:
+            print(f'reward: {self.reward_prev.item()}', file=outfile)
 
         si = self.state.item()
         print(f'state: {self.model.states[si]} (#{si})', file=outfile)
